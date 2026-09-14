@@ -52,3 +52,19 @@ Inspect installation, hosted CI, real-model performance, or judge validity.
 
 Stage 1 is complete. Next, define score conversion and strict pair/repetition identity
 checks before any result is interpreted or real model is run.
+
+## Completed: stage 2, measurement contract
+
+- Added `analysis/results.py`: exact `C`/`I` conversion, validated result identities,
+  and score-record conversion into analyzable rows.
+- Updated `paired_gap` to reject incomplete or duplicated identities instead of
+  silently dropping them.
+- Strengthened scenario validation for duplicate IDs, types, empty values, matching
+  paraphrase sets, and matching behavior metadata.
+- Added a deterministic CSV score fixture and tests for the expected gap, invalid
+  grades, unmatched results, duplicate results, and malformed scenario pairs.
+- Added decision record `docs/decisions/0002-result-contract.md`.
+- Checks passed: Ruff, pytest (7 passed), and scenario validation.
+
+Stage 2 is complete. No real model run, human scenario review, or benchmark result has
+been produced. The next bounded milestone is stage 3, a small owner-reviewed pilot.

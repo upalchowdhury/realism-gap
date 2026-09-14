@@ -35,10 +35,28 @@ def _text_of(inp) -> str:
     return "\n".join(m.get("content", "") for m in inp if isinstance(m, dict))
 
 
+def _valid_input(inp) -> bool:
+    if isinstance(inp, str):
+        return bool(inp.strip())
+    if not isinstance(inp, list) or not inp:
+        return False
+    return all(
+        isinstance(message, dict)
+        and message.get("role") in {"system", "user", "assistant"}
+        and isinstance(message.get("content"), str)
+        and bool(message["content"].strip())
+        for message in inp
+    )
+
+
 def validate(root: Path) -> list[str]:
     errors: list[str] = []
     for family in sorted(p for p in root.iterdir() if p.is_dir()):
         pairs: dict[str, set[str]] = defaultdict(set)
+        pair_rows: dict[str, dict[str, list[tuple[int, dict, int]]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
+        seen_ids: dict[str, Path] = {}
         for realism in ("lab", "wild"):
             f = family / f"{realism}.jsonl"
             if not f.exists():
@@ -52,13 +70,39 @@ def validate(root: Path) -> list[str]:
                 except json.JSONDecodeError as e:
                     errors.append(f"{f}:{n}: bad json ({e})")
                     continue
+                if not isinstance(row, dict):
+                    errors.append(f"{f}:{n}: row must be a JSON object")
+                    continue
                 missing = REQUIRED - row.keys()
                 if missing:
                     errors.append(f"{f}:{n}: missing fields {sorted(missing)}")
                     continue
                 if row["realism"] != realism:
                     errors.append(f"{f}:{n}: realism='{row['realism']}' in {realism}.jsonl")
-                pairs[row["pair_id"]].add(realism)
+                for field in ("id", "pair_id", "behavior"):
+                    if not isinstance(row[field], str) or not row[field].strip():
+                        errors.append(f"{f}:{n}: {field} must be a non-empty string")
+                if (isinstance(row["paraphrase"], bool)
+                        or not isinstance(row["paraphrase"], int)
+                        or row["paraphrase"] < 0):
+                    errors.append(f"{f}:{n}: paraphrase must be a non-negative integer")
+                if not _valid_input(row["input"]):
+                    errors.append(f"{f}:{n}: input must be a non-empty string or message list")
+                if not isinstance(row["target"], str) or not row["target"].strip():
+                    errors.append(f"{f}:{n}: target must be a non-empty string")
+                if isinstance(row["id"], str):
+                    if row["id"] in seen_ids:
+                        errors.append(f"{f}:{n}: duplicate id '{row['id']}' (already in {seen_ids[row['id']]})")
+                    else:
+                        seen_ids[row["id"]] = f
+                valid_pair_id = isinstance(row["pair_id"], str) and bool(row["pair_id"].strip())
+                valid_paraphrase = isinstance(row["paraphrase"], int) and not isinstance(
+                    row["paraphrase"], bool
+                ) and row["paraphrase"] >= 0
+                if valid_pair_id:
+                    pairs[row["pair_id"]].add(realism)
+                    if valid_paraphrase:
+                        pair_rows[row["pair_id"]][realism].append((row["paraphrase"], row, n))
                 if realism == "wild":
                     text = _text_of(row["input"])
                     for rx in _TELLS:
@@ -68,6 +112,25 @@ def validate(root: Path) -> list[str]:
         for pid, sides in sorted(pairs.items()):
             if sides != {"lab", "wild"}:
                 errors.append(f"{family.name}: pair {pid} only has {sorted(sides)}")
+                continue
+            side_rows = pair_rows[pid]
+            side_sets = {
+                side: [row[0] for row in side_rows[side]] for side in ("lab", "wild")
+            }
+            for side in side_rows:
+                paraphrases = side_sets[side]
+                if len(paraphrases) != len(set(paraphrases)):
+                    errors.append(f"{family.name}: pair {pid} has duplicate {side} paraphrase")
+            if set(side_sets["lab"]) != set(side_sets["wild"]):
+                errors.append(
+                    f"{family.name}: pair {pid} has mismatched paraphrases "
+                    f"(lab={sorted(set(side_sets['lab']))}, wild={sorted(set(side_sets['wild']))})"
+                )
+            behaviors = {
+                side: {row[1]["behavior"] for row in side_rows[side]} for side in ("lab", "wild")
+            }
+            if behaviors["lab"] != behaviors["wild"]:
+                errors.append(f"{family.name}: pair {pid} has mismatched behavior metadata")
     return errors
 
 

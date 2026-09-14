@@ -16,6 +16,9 @@
 - In stage 1, the assistant added packaging configuration, a dependency lockfile,
   mock smoke plumbing, and lint fixes. The assistant executed the local foundation
   checks; the mock outputs are plumbing evidence, not benchmark findings.
+- In stage 2, the assistant added the score/result contract, stricter scenario
+  validation, a deterministic fixture, tests, and decision record. These tests use
+  synthetic or fixture data and contain no model performance findings.
 
 ## Intended division of work
 

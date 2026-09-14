@@ -15,13 +15,14 @@ alongside an *awareness probe* (does the model say, or reason, that it is being 
 
 ## Current stage
 
-**Stage 1 complete: runnable foundation.** This remains a starter skeleton with two
+**Stage 2 complete: measurement contract.** This remains a starter skeleton with two
 feedback-sycophancy pairs, not a validated benchmark. The [build and deployment plan](docs/build-plan.md)
 defines the stages, completion gates, known issues, and the next bounded task.
 
 The local foundation is verified with Python >=3.11, a locked editable install, Ruff,
 pytest, validation, and both lab and wild Inspect runs with mock generation and a
-deterministic offline plumbing scorer. Next: define the measurement and export contract.
+deterministic offline plumbing scorer. The result contract now rejects incomplete
+identities and invalid grades before analysis. Next: design and run the small real pilot.
 Local continuity notes live in Git-ignored `MEMORY.md`.
 
 ## Results

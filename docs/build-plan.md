@@ -1,6 +1,6 @@
 # Build and deployment plan
 
-Updated: 2026-09-14. Current stage: **1 complete — runnable foundation**. Next: **2 — measurement contract**.
+Updated: 2026-09-14. Current stage: **2 complete — measurement contract**. Next: **3 — small real pilot**.
 
 This is the execution plan for the original brief in [`../doc.md`](../doc.md).
 That brief records ambitions and hypotheses; it is not evidence of completed work.
@@ -88,7 +88,7 @@ review the current milestone before moving to the next. Today stops after stage 
 |---|---|---|---|
 | **0. Goal and baseline — complete** | Audit skeleton; write this plan; add ignored local memory; initialize Git and commit baseline | Scenario validator, available baseline checks, honest record of unexecuted checks, memory absent from Git index | Local commit only; published as baseline |
 | **1. Runnable foundation — complete** | Python >=3.11 environment; reproducible dependency install; fix packaging/imports and mock judge configuration; lab + wild smoke runs; align Makefile and CI | Fresh editable install from `uv.lock`; Ruff; pytest; scenario validator; both mock runs complete with 2/2 scores per scorer and matching metadata, without API keys; logs inspected | Locally runnable; CI fix ready for push |
-| **2. Measurement contract — weeks 1–2** | Scenario schema and pair invariants; score conversion and run-log export; strict analysis input checks; awareness naming/limitations; written design and power simulation | Small deterministic fixture travels from scores to expected gap; missing/duplicate/mismatched keys and invalid grades fail visibly; ablation and judge-validation plans documented | Proposed `v0.2-design` after stage evidence exists |
+| **2. Measurement contract — complete** | Scenario schema and pair invariants; score conversion and score export contract; strict analysis input checks; awareness naming/limitations; written design and power simulation | Deterministic fixture travels from scores to expected gap; missing/duplicate/mismatched keys and invalid grades fail visibly; decision record documents the contract | Proposed `v0.2-design` after stage evidence exists |
 | **3. Small real pilot — week 2** | Grow to 10 reviewed feedback pairs; select two models and judge; cap tokens/spend; capture manifests and manual score spot-checks; run a controlled pilot | Reviewable lab/wild transcripts, complete paired export, exploratory gap/CI, actual cost, rubric disagreements and limitations; owner supplies human review | Proposed `v0.3-pilot`; publish reviewed pilot artifacts and a basic static report when requested |
 | **4. Broader tasks and judge validation — weeks 3–4** | Add one family at a time; build one hard task before expanding toward four; pin containers; separate hidden tests; collect 120 human labels and timed baselines | Per-family smoke and validity checks; judge agreement with disagreements reported; hidden scorer accepts a correct solve and rejects plausible wrong solves; human baseline recorded | Draft contribution and task artifacts once independently reviewable |
 | **5. Controlled scale — week 5** | Manifest-driven batches, reuse/resume, retry limits, cost ledger and stop budget; pilot-derived matrix; hard-task runner integration after verifying its current standard | Interrupted run resumes without duplicate records; all generation/judge/retry/tool costs accounted for; budget bounds tested; planned vs completed coverage recorded | Freeze run configuration, execute batch jobs, publish versioned result artifacts |
@@ -127,12 +127,12 @@ container host selected when the agentic stage needs one. Hosting/provider choic
 current model availability, and prices will be verified at their stage rather than
 fixed speculatively now.
 
-## Next session: stage 2 only
+## Next session: stage 3 only
 
 1. Read the local `MEMORY.md` and this plan; inspect Git status.
-2. Define score conversion (`C` = 0 misbehavior, `I` = 1) and invalid-grade handling.
-3. Add strict pair/repetition identity checks and a deterministic score-export fixture.
-4. Run the measurement-contract tests and update the design decision before committing.
+2. Review the selected two-model pilot configuration and cost cap.
+3. Add reviewed sycophancy pairs only after the owner supplies human scenario review.
+4. Run a small real pilot with traceable run manifests and manual score spot-checks.
 
 Model selection, paid runs, expanding scenarios, hard tasks, and deployment belong to
 later stages. No production measurements or external publications have happened yet.

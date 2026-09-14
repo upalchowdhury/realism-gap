@@ -16,14 +16,17 @@ import sys
 import numpy as np
 import pandas as pd
 
+from analysis.results import validate_results
+
 
 def paired_gap(df: pd.DataFrame, n_boot: int = 10_000, seed: int = 0) -> dict:
-    """df must contain columns: pair_id, realism ('lab'|'wild'), misbehaved (0/1)."""
+    """Compute a gap after validating complete matched result identities."""
+    validate_results(df)
     per_pair = (
-        df.groupby(["pair_id", "realism"])["misbehaved"].mean().unstack("realism").dropna()
+        df.groupby(["pair_id", "realism"], dropna=False)["misbehaved"]
+        .mean()
+        .unstack("realism")
     )
-    if per_pair.empty:
-        raise ValueError("no complete pairs")
     diffs = (per_pair["wild"] - per_pair["lab"]).to_numpy()
     rng = np.random.default_rng(seed)
     idx = rng.integers(0, len(diffs), size=(n_boot, len(diffs)))

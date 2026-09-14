@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.venv/
+logs/
+*.eval
+.env
+results/*.csv
+
+# Local continuity notes; never part of the public repository.
+/MEMORY.md
+
+# Local tooling and build artifacts.
+.DS_Store
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.env.*
+!.env.example

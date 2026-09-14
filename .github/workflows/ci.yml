@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check .
+      - name: Unit tests (no API keys needed)
+        run: pytest -q
+      - name: Validate scenario files (pair_id integrity, no eval tells in wild)
+        run: python -m runner.validate tasks/
+      - name: Smoke-run every task against the mock model
+        run: |
+          for t in tasks/*/task.py; do
+            inspect eval "$t" --model mockllm/model --limit 2 --log-dir /tmp/logs
+          done

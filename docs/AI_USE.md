@@ -31,6 +31,9 @@
   reproducibility guide, task-schema documentation, and CI/Makefile targets. The
   dashboard was tested with both an empty state and a synthetic aggregate row; no
   empirical result was inferred from that synthetic row.
+- The assistant added the resumable manifest batch controller and tests for retries,
+  resume behavior, dry-run planning, and budget enforcement. It has not executed a
+  real model batch or generated benchmark scores.
 
 ## Intended division of work
 

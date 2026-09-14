@@ -82,6 +82,14 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
 - Checks passed: Ruff, pytest (14 passed), scenario validation, and deterministic
   empty-state dashboard generation. No empirical score or public finding was added.
 
+## Resumable batch controller
+
+- Added `runner.batch`, which executes exact `RunSpec` commands with atomic state
+  writes, skip-on-success resume behavior, bounded retries, timeout handling, dry-run
+  planning, and an explicit per-attempt budget cap.
+- Added tests for retry/resume, dry-run planning, and budget blocking. The controller
+  stores execution metadata only; log export and result validation remain mandatory.
+
 ## Local model inventory and provider smoke (stage 3 preparation)
 
 - Ollama reports: `qwen3.8:27b` (17 GB), `orcarouter/Qwen3.8-27B-Uncensored:latest`

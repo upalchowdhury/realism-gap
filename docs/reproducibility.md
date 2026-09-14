@@ -64,3 +64,21 @@ with `runner.export.records_from_logs`. It requires exact `C`/`I` values from th
 configured grader and validates all pair, seed, and paraphrase identities. Then use
 `analysis.gap.gap_table` and generate the dashboard from the resulting aggregate CSV.
 Do not bypass these checks by editing a CSV manually.
+
+## Bounded batch execution
+
+Create a JSON manifest with `runner.manifest.write_manifest`, then run it through the
+resumable controller:
+
+```bash
+python -m runner.batch pilot_manifest.json \
+  --state logs/batch_state.json --retry-limit 1 \
+  --budget-usd 20 --cost-per-attempt-usd 0
+```
+
+The state file records each exact manifest entry, attempts, exit status, and elapsed
+time. Successful entries are skipped on rerun; failures and timeouts retry only up to
+the declared limit. A budget cap marks later entries `blocked_budget` rather than
+starting work that would exceed it. Use `--dry-run` to materialize a plan without
+executing Inspect. The controller records execution state only; failed or incomplete
+runs cannot enter analysis until log export validates them.

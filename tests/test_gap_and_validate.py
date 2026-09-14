@@ -1,4 +1,5 @@
 import json
+import subprocess
 from pathlib import Path
 
 import numpy as np
@@ -7,6 +8,7 @@ import pandas as pd
 from analysis.dashboard import render_dashboard, write_dashboard
 from analysis.gap import paired_gap
 from analysis.results import grade_to_misbehaved, score_records, validate_results
+from runner.batch import BatchRunner, spec_key
 from runner.export import records_from_logs
 from runner.manifest import RunSpec, write_manifest
 from runner.validate import validate
@@ -137,6 +139,65 @@ def test_run_spec_rejects_unbounded_or_invalid_values():
             pass
         else:
             raise AssertionError(f"invalid RunSpec value accepted: {field}={value!r}")
+
+
+def _run_spec():
+    return RunSpec(
+        task_file="tasks/sycophancy_feedback/task.py",
+        model="mockllm/model",
+        judge="mockllm/model",
+        realism="lab",
+        seed=0,
+        paraphrase=0,
+    )
+
+
+def test_batch_runner_retries_and_resumes_success(tmp_path):
+    spec = _run_spec()
+    state_path = tmp_path / "state.json"
+    calls = []
+
+    def flaky(command, **kwargs):
+        calls.append((command, kwargs))
+        code = 1 if len(calls) == 1 else 0
+        return subprocess.CompletedProcess(command, code, "", "temporary failure" if code else "")
+
+    state = BatchRunner(specs=[spec], state_path=state_path, retry_limit=1).run(execute=flaky)
+    record = state["runs"][spec_key(spec)]
+    assert record["status"] == "success"
+    assert record["attempts"] == 2
+    assert len(calls) == 2
+
+    resumed = BatchRunner(specs=[spec], state_path=state_path, retry_limit=1).run(execute=flaky)
+    assert resumed["runs"][spec_key(spec)]["attempts"] == 2
+    assert len(calls) == 2
+
+
+def test_batch_runner_enforces_budget_and_dry_run(tmp_path):
+    spec = _run_spec()
+    state_path = tmp_path / "state.json"
+    planned = BatchRunner(
+        specs=[spec], state_path=state_path, budget_usd=0.05, cost_per_attempt_usd=0.05
+    ).run(dry_run=True)
+    assert planned["runs"][spec_key(spec)]["status"] == "planned"
+
+    def succeeds(command, **kwargs):
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    blocked = BatchRunner(
+        specs=[spec], state_path=state_path, budget_usd=0.05, cost_per_attempt_usd=0.05
+    ).run(execute=succeeds)
+    assert blocked["runs"][spec_key(spec)]["status"] == "success"
+    assert blocked["spent_usd"] == 0.05
+
+    second_spec = RunSpec(**{**spec.manifest_record(), "paraphrase": 1})
+    two_state = tmp_path / "two.json"
+    limited = BatchRunner(
+        specs=[spec, second_spec], state_path=two_state, budget_usd=0.05,
+        cost_per_attempt_usd=0.05,
+    ).run(execute=succeeds)
+    statuses = {record["status"] for record in limited["runs"].values()}
+    assert statuses == {"success", "blocked_budget"}
 
 
 def _inspect_log(realism, grades, seed=3):

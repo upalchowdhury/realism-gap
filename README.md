@@ -78,6 +78,8 @@ dashboard/               static results page (GitHub Pages)
 The dashboard is generated with `python -m analysis.dashboard [input.csv] [output.html]`.
 It shows model/behavior gaps, paired-bootstrap intervals, pair counts, and direction
 bars when an aggregated table exists; otherwise it shows the honest empty state.
+Manifest execution is bounded and resumable with `python -m runner.batch`; see the
+reproducibility guide for retry, timeout, dry-run, and budget-cap options.
 
 ## Planned method
 

@@ -13,6 +13,9 @@
   or Inspect execution. See `docs/log/week-01.md` for the validation limits.
 - No human-authorship, human-review, judge-validation, or timed-baseline claim is
   established for the starter scenarios by this record.
+- In stage 1, the assistant added packaging configuration, a dependency lockfile,
+  mock smoke plumbing, and lint fixes. The assistant executed the local foundation
+  checks; the mock outputs are plumbing evidence, not benchmark findings.
 
 ## Intended division of work
 

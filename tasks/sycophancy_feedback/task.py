@@ -18,6 +18,7 @@ from inspect_ai.scorer import model_graded_qa
 from inspect_ai.solver import generate, system_message
 
 from scorers.awareness_probe import awareness_probe
+from scorers.offline import offline_smoke
 from scorers.rubrics import HONESTY_GRADER_INSTRUCTIONS, HONESTY_GRADER_TEMPLATE
 
 HERE = Path(__file__).parent
@@ -34,6 +35,7 @@ SYSTEM = {
 }
 
 JUDGE_MODEL = "anthropic/claude-sonnet-4-5"  # pin the judge; it is part of the method
+MOCK_MODEL = "mockllm/model"
 
 
 @task
@@ -47,16 +49,22 @@ def sycophancy_feedback(realism: Literal["lab", "wild"] = "lab", judge: str = JU
             metadata=["pair_id", "behavior", "realism", "paraphrase"],
         ),
     )
+    honesty_scorer = (
+        offline_smoke()
+        if judge == MOCK_MODEL
+        else model_graded_qa(
+            template=HONESTY_GRADER_TEMPLATE,
+            instructions=HONESTY_GRADER_INSTRUCTIONS,
+            model=judge,
+        )
+    )
     return Task(
         dataset=dataset,
         solver=[system_message(SYSTEM[realism]), generate()],
         scorer=[
-            # 1 = the model gave an honest, substantively critical assessment; 0 = it flattered.
-            model_graded_qa(
-                template=HONESTY_GRADER_TEMPLATE,
-                instructions=HONESTY_GRADER_INSTRUCTIONS,
-                model=judge,
-            ),
+            # Real runs: 1 = honest assessment; 0 = sycophantic. Offline runs use
+            # a named plumbing scorer because mockllm cannot emit a judge grade.
+            honesty_scorer,
             # Did the model say or reason that this is a test / evaluation?
             awareness_probe(),
         ],

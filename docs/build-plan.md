@@ -1,6 +1,6 @@
 # Build and deployment plan
 
-Updated: 2026-09-14. Current stage: **0 — goal and baseline**.
+Updated: 2026-09-14. Current stage: **1 complete — runnable foundation**. Next: **2 — measurement contract**.
 
 This is the execution plan for the original brief in [`../doc.md`](../doc.md).
 That brief records ambitions and hypotheses; it is not evidence of completed work.
@@ -63,10 +63,11 @@ A zero or negative gap is a valid outcome.
 
 Specific findings to resolve during the next stages:
 
-1. CI and Makefile select `mockllm/model` for generation but leave the task's explicit
-   Anthropic judge in place. A mock smoke run must explicitly use a mock judge too.
-   Inspect documents alternate model selection for scorers separately from the
-   evaluated model: [Using Models](https://inspect.aisi.org.uk/models.html#model-api).
+1. CI and Makefile now pass `mockllm/model` explicitly for the offline smoke path.
+   Because generic mock output cannot satisfy the honesty judge's grade contract,
+   the task selects a named `offline_smoke` plumbing scorer for that path. Real runs
+   retain the explicit Anthropic judge. Inspect documents alternate model selection
+   for scorers separately from the evaluated model: [Using Models](https://inspect.aisi.org.uk/models.html#model-api).
 2. `pyproject.toml` has no explicit build backend/package discovery configuration
    despite multiple top-level packages. Test editable installation and correct it
    if needed; do not assume the setup instructions work.
@@ -85,8 +86,8 @@ review the current milestone before moving to the next. Today stops after stage 
 
 | Stage | Build scope | Evidence required to finish | Deployment boundary |
 |---|---|---|---|
-| **0. Goal and baseline — now** | Audit skeleton; write this plan; add ignored local memory; initialize Git and commit baseline | Scenario validator, available baseline checks, honest record of unexecuted checks, memory absent from Git index | Local commit only |
-| **1. Runnable foundation — week 1** | Python >=3.11 environment; reproducible dependency install; fix packaging/imports and mock judge configuration; lab + wild smoke runs; align Makefile and CI | Fresh install; Ruff; pytest; scenario validator; both mock runs complete with scores and matching metadata, without API keys; inspect generated logs for errors | Locally runnable; prepare GitHub CI, publish when requested |
+| **0. Goal and baseline — complete** | Audit skeleton; write this plan; add ignored local memory; initialize Git and commit baseline | Scenario validator, available baseline checks, honest record of unexecuted checks, memory absent from Git index | Local commit only; published as baseline |
+| **1. Runnable foundation — complete** | Python >=3.11 environment; reproducible dependency install; fix packaging/imports and mock judge configuration; lab + wild smoke runs; align Makefile and CI | Fresh editable install from `uv.lock`; Ruff; pytest; scenario validator; both mock runs complete with 2/2 scores per scorer and matching metadata, without API keys; logs inspected | Locally runnable; CI fix ready for push |
 | **2. Measurement contract — weeks 1–2** | Scenario schema and pair invariants; score conversion and run-log export; strict analysis input checks; awareness naming/limitations; written design and power simulation | Small deterministic fixture travels from scores to expected gap; missing/duplicate/mismatched keys and invalid grades fail visibly; ablation and judge-validation plans documented | Proposed `v0.2-design` after stage evidence exists |
 | **3. Small real pilot — week 2** | Grow to 10 reviewed feedback pairs; select two models and judge; cap tokens/spend; capture manifests and manual score spot-checks; run a controlled pilot | Reviewable lab/wild transcripts, complete paired export, exploratory gap/CI, actual cost, rubric disagreements and limitations; owner supplies human review | Proposed `v0.3-pilot`; publish reviewed pilot artifacts and a basic static report when requested |
 | **4. Broader tasks and judge validation — weeks 3–4** | Add one family at a time; build one hard task before expanding toward four; pin containers; separate hidden tests; collect 120 human labels and timed baselines | Per-family smoke and validity checks; judge agreement with disagreements reported; hidden scorer accepts a correct solve and rejects plausible wrong solves; human baseline recorded | Draft contribution and task artifacts once independently reviewable |
@@ -126,13 +127,12 @@ container host selected when the agentic stage needs one. Hosting/provider choic
 current model availability, and prices will be verified at their stage rather than
 fixed speculatively now.
 
-## Next session: stage 1 only
+## Next session: stage 2 only
 
 1. Read the local `MEMORY.md` and this plan; inspect Git status.
-2. Establish Python >=3.11 and a reproducible local environment; verify editable install.
-3. Fix only foundation failures, including explicit mock generation and grading.
-4. Run lint, pytest, validation, and both lab/wild mock smoke checks; inspect logs.
-5. Update local memory and public status with actual results; commit that bounded change.
+2. Define score conversion (`C` = 0 misbehavior, `I` = 1) and invalid-grade handling.
+3. Add strict pair/repetition identity checks and a deterministic score-export fixture.
+4. Run the measurement-contract tests and update the design decision before committing.
 
 Model selection, paid runs, expanding scenarios, hard tasks, and deployment belong to
 later stages. No production measurements or external publications have happened yet.

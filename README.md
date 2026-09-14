@@ -15,13 +15,14 @@ alongside an *awareness probe* (does the model say, or reason, that it is being 
 
 ## Current stage
 
-**Stage 0: goal and baseline.** This is a starter skeleton with two feedback-sycophancy
-pairs, not a validated benchmark. The [build and deployment plan](docs/build-plan.md)
+**Stage 1 complete: runnable foundation.** This remains a starter skeleton with two
+feedback-sycophancy pairs, not a validated benchmark. The [build and deployment plan](docs/build-plan.md)
 defines the stages, completion gates, known issues, and the next bounded task.
 
-Next: establish Python >=3.11, verify installation, and run both lab and wild through
-Inspect with mock generation **and grading**. Full CI and Inspect execution have not
-yet been verified. Local continuity notes live in Git-ignored `MEMORY.md`.
+The local foundation is verified with Python >=3.11, a locked editable install, Ruff,
+pytest, validation, and both lab and wild Inspect runs with mock generation and a
+deterministic offline plumbing scorer. Next: define the measurement and export contract.
+Local continuity notes live in Git-ignored `MEMORY.md`.
 
 ## Results
 
@@ -50,8 +51,9 @@ Intended smoke command without an API key (to verify in stage 1 for both realism
 inspect eval tasks/sycophancy_feedback/task.py -T realism=lab -T judge=mockllm/model --model mockllm/model --limit 2
 ```
 
-The starter CI and Makefile still need the explicit mock-judge override. Selecting
-only a mock generation model leaves the task's configured real judge in place.
+The `judge=mockllm/model` override is required for an offline smoke run. In that mode
+the task uses a named `offline_smoke` plumbing scorer because generic mock output cannot
+emit the honesty judge's required grade. Real runs retain the configured judge.
 
 ## Layout
 

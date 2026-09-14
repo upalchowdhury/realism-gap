@@ -13,6 +13,7 @@ def main() -> None:
         [sys.executable, "-m", "pytest", "tests_hidden", "-q", "--no-header"],
         capture_output=True,
         text=True,
+        check=False,
     )
     passed = proc.returncode == 0
     print(json.dumps({"score": 1 if passed else 0, "partial": {}, "notes": proc.stdout[-2000:]}))

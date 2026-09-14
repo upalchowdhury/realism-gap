@@ -22,5 +22,8 @@ jobs:
       - name: Smoke-run every task against the mock model
         run: |
           for t in tasks/*/task.py; do
-            inspect eval "$t" --model mockllm/model --limit 2 --log-dir /tmp/logs
+            for realism in lab wild; do
+              inspect eval "$t" -T realism="$realism" -T judge=mockllm/model \
+                --model mockllm/model --limit 2 --log-dir /tmp/logs
+            done
           done

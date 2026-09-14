@@ -33,8 +33,22 @@ Inspect installation, hosted CI, real-model performance, or judge validity.
   real results can safely enter the analysis.
 - No external evaluation reproduction or paid model run has been performed.
 
+## Completed: stage 1, runnable foundation
+
+- Added explicit setuptools build configuration and `uv.lock`; editable installation
+  now succeeds under CPython 3.11.15.
+- Updated CI and Makefile to run both `lab` and `wild` with mock generation and an
+  explicit mock judge argument.
+- Added `offline_smoke`, a named deterministic plumbing scorer. It checks non-empty
+  mock output only and is never a behavior label.
+- Fixed two Ruff 0.16 findings in the existing analysis and hard-task template.
+- Foundation checks passed: Ruff, pytest (3 passed), scenario validation, and both
+  Inspect smoke runs. Each run completed 2/2 samples for `offline_smoke` and
+  `awareness_probe`, with success status and the expected realism metadata.
+- The first smoke attempt produced NaN/unscored honesty grades; that failure led to
+  the explicit offline scorer rather than being hidden as a passing result.
+
 ## Next bounded step
 
-Establish the supported environment, fix foundation failures, and verify lab/wild
-mock generation and grading through the same checks used by CI. Record the evidence
-and commit stage 1 before starting the measurement contract or pilot.
+Stage 1 is complete. Next, define score conversion and strict pair/repetition identity
+checks before any result is interpreted or real model is run.

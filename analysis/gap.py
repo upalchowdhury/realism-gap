@@ -30,7 +30,7 @@ def paired_gap(df: pd.DataFrame, n_boot: int = 10_000, seed: int = 0) -> dict:
     boots = diffs[idx].mean(axis=1)
     lo, hi = np.percentile(boots, [2.5, 97.5])
     return {
-        "n_pairs": int(len(diffs)),
+        "n_pairs": len(diffs),
         "p_lab": float(per_pair["lab"].mean()),
         "p_wild": float(per_pair["wild"].mean()),
         "gap": float(diffs.mean()),

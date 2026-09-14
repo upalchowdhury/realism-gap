@@ -19,6 +19,9 @@
 - In stage 2, the assistant added the score/result contract, stricter scenario
   validation, a deterministic fixture, tests, and decision record. These tests use
   synthetic or fixture data and contain no model performance findings.
+- In stage 3 preparation, the assistant queried the owner’s local Ollama/Hugging Face
+  inventory and ran bounded provider-connectivity checks. The generated outputs were
+  discarded; they are not benchmark observations or human labels.
 
 ## Intended division of work
 

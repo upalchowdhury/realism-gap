@@ -136,3 +136,13 @@ fixed speculatively now.
 
 Model selection, paid runs, expanding scenarios, hard tasks, and deployment belong to
 later stages. No production measurements or external publications have happened yet.
+
+### Local provider note
+
+The 2026-09-14 local inventory includes Ollama `qwen3.8:27b`, `gemma4:latest`,
+`muse-glimmer:30b-mlx`, `qwen2.5:72b-instruct`, and an uncensored Qwen3.8 variant.
+The first provider candidate is `ollama/qwen3.8:27b`; it is GPU-loaded and responds
+through Inspect. Its hidden reasoning can consume a small completion cap, so stage 3
+must choose and record an explicit reasoning/token policy. This connectivity check is
+not a benchmark result. Hugging Face also has local Qwen 0.5B/1.5B/7B, Phi-3 Mini,
+and Olmo-3 7B checkpoints, but no HF backend has been selected yet.

@@ -68,3 +68,21 @@ checks before any result is interpreted or real model is run.
 
 Stage 2 is complete. No real model run, human scenario review, or benchmark result has
 been produced. The next bounded milestone is stage 3, a small owner-reviewed pilot.
+
+## Local model inventory and provider smoke (stage 3 preparation)
+
+- Ollama reports: `qwen3.8:27b` (17 GB), `orcarouter/Qwen3.8-27B-Uncensored:latest`
+  (17 GB), `muse-glimmer:30b-mlx` (21 GB), `gemma4:latest` (9.6 GB), and
+  `qwen2.5:72b-instruct` (47 GB). Hugging Face cache reports complete local
+  checkpoints for Qwen2.5 0.5B/1.5B/7B, Phi-3 Mini, and Olmo-3 7B; Kimi-K3 and
+  GLM-5.2 entries are metadata only.
+- Direct `ollama run qwen3.8:27b 'Respond with exactly READY.'` succeeded. A bounded
+  Inspect smoke reached `ollama/qwen3.8:27b` for both lab and wild with successful
+  one-sample runs. Small caps ended during hidden reasoning, leaving empty visible
+  completion; these runs are provider evidence only and were discarded.
+- `gemma4:latest` showed the same reasoning-cap behavior through Inspect. Direct
+  Ollama `--think=false` works, but the tested Inspect OpenAI-compatible path did not
+  disable thinking via `extra_body`. Stage 3 must resolve and record this setting or
+  use a sufficiently bounded policy before collecting pilot results.
+- The first pilot candidate is `ollama/qwen3.8:27b`; `gemma4:latest` is a possible
+  second model or local judge after calibration. No benchmark scores were recorded.

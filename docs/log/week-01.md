@@ -86,3 +86,13 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
   use a sufficiently bounded policy before collecting pilot results.
 - The first pilot candidate is `ollama/qwen3.8:27b`; `gemma4:latest` is a possible
   second model or local judge after calibration. No benchmark scores were recorded.
+
+## Pilot control layer
+
+- Added `runner/manifest.py` with typed `RunSpec` bounds and deterministic command /
+  manifest serialization. This prepares controlled execution without running a
+  batch or writing results.
+- Added `docs/pilot_config.md` with the provisional model candidates, reasoning/token
+  calibration requirement, cost/configuration fields, and owner-review gate.
+- Added tests for exact command construction, manifest serialization, and invalid
+  bounds. The suite now passes 9 tests.

@@ -6,6 +6,7 @@ import pandas as pd
 
 from analysis.gap import paired_gap
 from analysis.results import grade_to_misbehaved, score_records, validate_results
+from runner.manifest import RunSpec, write_manifest
 from runner.validate import validate
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,3 +102,36 @@ def test_scenario_validator_rejects_duplicate_and_mismatched_paraphrase(tmp_path
     errors = validate(tmp_path)
     assert any("duplicate id" in error for error in errors)
     assert any("mismatched paraphrases" in error for error in errors)
+
+
+def test_run_spec_is_explicit_and_bounded(tmp_path):
+    spec = RunSpec(
+        task_file="tasks/sycophancy_feedback/task.py",
+        model="ollama/qwen3.8:27b",
+        judge="ollama/gemma4:latest",
+        realism="wild",
+        seed=2,
+        paraphrase=1,
+        max_tokens=1024,
+        timeout=120,
+    )
+    assert spec.command("inspect") == [
+        "inspect", "eval", "tasks/sycophancy_feedback/task.py", "-T", "realism=wild",
+        "-T", "judge=ollama/gemma4:latest", "--model", "ollama/qwen3.8:27b",
+        "--max-tokens", "1024", "--max-connections", "1", "--timeout", "120",
+    ]
+    manifest = tmp_path / "manifest.json"
+    write_manifest(manifest, [spec])
+    assert json.loads(manifest.read_text()) == [spec.manifest_record()]
+
+
+def test_run_spec_rejects_unbounded_or_invalid_values():
+    common = {"task_file": "task.py", "model": "m", "judge": "j", "realism": "lab",
+              "seed": 0, "paraphrase": 0}
+    for field, value in (("realism", "other"), ("max_tokens", 0), ("timeout", 0), ("seed", -1)):
+        try:
+            RunSpec(**{**common, field: value})
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"invalid RunSpec value accepted: {field}={value!r}")

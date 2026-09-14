@@ -57,7 +57,7 @@ A zero or negative gap is a valid outcome.
 | Scoring | C/I honesty rubric and awareness pattern matcher | Explicit `misbehaved` conversion, malformed-grade handling, human validation |
 | Validation | Required fields, pair sides, regex tells | Types, duplicate IDs, matching paraphrase sets, empty datasets, system/tool text coverage |
 | Analysis | Scenario-cluster bootstrap and three tests | Run-log export; reject/report missing, duplicate, or unmatched repetitions |
-| Runner | Scenario validator only | Run manifest, budget tracking, caching, retry/resume |
+| Runner | Scenario validator; typed bounded `RunSpec` and manifest writer | Budget tracking, caching, retry/resume |
 | Hard tasks | Template, hidden-scorer stub, baseline and QA sheets | First complete task, isolated scorer, genuine timed human solve |
 | Publication | CI configuration, static HTML placeholder, documentation | Executed CI, reproducible artifacts, Pages deployment |
 
@@ -130,7 +130,7 @@ fixed speculatively now.
 ## Next session: stage 3 only
 
 1. Read the local `MEMORY.md` and this plan; inspect Git status.
-2. Review the selected two-model pilot configuration and cost cap.
+2. Review the draft local model configuration in `docs/pilot_config.md` and cost cap.
 3. Add reviewed sycophancy pairs only after the owner supplies human scenario review.
 4. Run a small real pilot with traceable run manifests and manual score spot-checks.
 

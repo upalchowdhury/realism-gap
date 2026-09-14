@@ -22,6 +22,9 @@
 - In stage 3 preparation, the assistant queried the owner’s local Ollama/Hugging Face
   inventory and ran bounded provider-connectivity checks. The generated outputs were
   discarded; they are not benchmark observations or human labels.
+- The assistant then added a typed run manifest and draft pilot configuration. No
+  scenario review, human label, pilot score, or interpretation was delegated to a
+  model or claimed as complete.
 
 ## Intended division of work
 

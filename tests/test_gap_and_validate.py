@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from analysis.dashboard import render_dashboard, write_dashboard
 from analysis.gap import paired_gap
 from analysis.results import grade_to_misbehaved, score_records, validate_results
 from runner.export import records_from_logs
@@ -177,3 +178,35 @@ def test_inspect_log_export_rejects_unscored_grade():
         assert "invalid or unscored" in str(error)
     else:
         raise AssertionError("unscored Inspect sample was accepted")
+
+
+def test_dashboard_empty_state_has_no_fake_results():
+    page = render_dashboard()
+    assert "No published results yet" in page
+    assert "0.500" not in page
+    assert "benchmark measurements" in page
+
+
+def test_dashboard_renders_gap_bars_and_intervals():
+    table = pd.DataFrame(
+        [{"model": "fixture", "behavior": "sycophancy_feedback", "gap": 0.5,
+          "ci_lo": 0.1, "ci_hi": 0.8, "n_pairs": 2}]
+    )
+    page = render_dashboard(table)
+    assert "fixture" in page
+    assert "+0.500" in page
+    assert "[+0.100, +0.800]" in page
+    assert "class=\"bar positive\"" in page
+
+
+def test_dashboard_writer_reads_aggregate_csv(tmp_path):
+    source = tmp_path / "gap_table.csv"
+    destination = tmp_path / "site" / "index.html"
+    pd.DataFrame(
+        [{"model": "fixture", "behavior": "b", "gap": -0.25,
+          "ci_lo": -0.5, "ci_hi": 0.1, "n_pairs": 4}]
+    ).to_csv(source, index=False)
+    write_dashboard(source, destination)
+    page = destination.read_text()
+    assert "fixture" in page
+    assert "-0.250" in page

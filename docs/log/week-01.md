@@ -69,6 +69,19 @@ checks before any result is interpreted or real model is run.
 Stage 2 is complete. No real model run, human scenario review, or benchmark result has
 been produced. The next bounded milestone is stage 3, a small owner-reviewed pilot.
 
+## Shareable MVP publication layer
+
+- Added `analysis.dashboard`, a self-contained static renderer for aggregate gap
+  tables. It shows paired-bootstrap intervals and direction bars when reviewed data
+  exists, and an explicit empty state otherwise.
+- Added a GitHub Pages workflow plus Makefile/CI targets so the same dashboard build
+  can be checked locally and published from `main`.
+- Added reproducibility and task-schema guides. They document locked setup, offline
+  smoke commands, the Inspect-log export path, and the boundary between plumbing
+  fixtures and benchmark evidence.
+- Checks passed: Ruff, pytest (14 passed), scenario validation, and deterministic
+  empty-state dashboard generation. No empirical score or public finding was added.
+
 ## Local model inventory and provider smoke (stage 3 preparation)
 
 - Ollama reports: `qwen3.8:27b` (17 GB), `orcarouter/Qwen3.8-27B-Uncensored:latest`

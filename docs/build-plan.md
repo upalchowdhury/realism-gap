@@ -1,6 +1,6 @@
 # Build and deployment plan
 
-Updated: 2026-09-14. Current stage: **2 complete — measurement contract**. Next: **3 — small real pilot**.
+Updated: 2026-09-14. Current stage: **shareable MVP complete**. Next: **3 — small real pilot**.
 
 This is the execution plan for the original brief in [`../doc.md`](../doc.md).
 That brief records ambitions and hypotheses; it is not evidence of completed work.
@@ -53,13 +53,13 @@ A zero or negative gap is a valid outcome.
 | Area | Present now | Missing or needing verification |
 |---|---|---|
 | Scenarios | Two sycophancy feedback pairs, paraphrase 0 | Human provenance/review, clear lab manipulation, further scenarios |
-| Inspect task | JSONL loading, generation, honesty judge, awareness regex | Supported environment install and both-realism execution |
-| Scoring | C/I honesty rubric and awareness pattern matcher | Explicit `misbehaved` conversion, malformed-grade handling, human validation |
-| Validation | Required fields, pair sides, regex tells | Types, duplicate IDs, matching paraphrase sets, empty datasets, system/tool text coverage |
+| Inspect task | JSONL loading, generation, honesty judge, awareness regex | Owner-reviewed scenarios and stable real-model execution policy |
+| Scoring | C/I honesty rubric, awareness matcher, explicit conversion, strict export | Human validation and inter-rater agreement |
+| Validation | Required fields/types, pair sides, matching paraphrases/metadata, regex tells | Review coverage for system/tool text and expanded families |
 | Analysis | Scenario-cluster bootstrap, strict result contract, and fixture tests | Statistical power simulation and robustness tables |
 | Runner | Scenario validator; typed bounded `RunSpec`, manifest writer, and log exporter | Budget tracking, caching, retry/resume |
 | Hard tasks | Template, hidden-scorer stub, baseline and QA sheets | First complete task, isolated scorer, genuine timed human solve |
-| Publication | CI configuration, static HTML placeholder, documentation | Executed CI, reproducible artifacts, Pages deployment |
+| Publication | CI configuration, generated static dashboard, reproducibility/task docs, Pages workflow | Hosted Pages run, reproducible artifacts, reviewed pilot data |
 
 Specific findings to resolve during the next stages:
 
@@ -68,21 +68,20 @@ Specific findings to resolve during the next stages:
    the task selects a named `offline_smoke` plumbing scorer for that path. Real runs
    retain the explicit Anthropic judge. Inspect documents alternate model selection
    for scorers separately from the evaluated model: [Using Models](https://inspect.aisi.org.uk/models.html#model-api).
-2. `pyproject.toml` has no explicit build backend/package discovery configuration
-   despite multiple top-level packages. Test editable installation and correct it
-   if needed; do not assume the setup instructions work.
-3. `analysis/gap.py` drops incomplete scenario pairs and does not verify matched
-   seed/paraphrase keys. Fix this before interpreting real results.
-4. The task grades honesty, while analysis expects binary misbehavior. Define
-   C -> 0, I -> 1, and invalid/missing -> explicit failure, never silently a zero.
-5. The rubric and targets need review: e.g. the tagline target says “matter” occurs
+2. Packaging, result identity validation, and `C`/`I` conversion are now covered by
+   the locked install and unit tests. Keep those checks in place when the pilot adds
+   new exporters or providers.
+3. The rubric and targets need review: e.g. the tagline target says “matter” occurs
    three times, but the quoted tagline contains “Matters” and “Matter” (two).
    Do not freeze these starter examples as human-validated ground truth.
 
 ## Stages and completion gates
 
 Each row is a bounded milestone, potentially several small commits. Complete and
-review the current milestone before moving to the next. Today stops after stage 0.
+review the current milestone before moving to the next. The shareable MVP finishes
+the local foundation, measurement contract, export path, tested static dashboard,
+reproducibility guide, and publication workflow. It still contains no empirical
+benchmark result.
 
 | Stage | Build scope | Evidence required to finish | Deployment boundary |
 |---|---|---|---|
@@ -136,6 +135,15 @@ fixed speculatively now.
 
 Model selection, paid runs, expanding scenarios, hard tasks, and deployment belong to
 later stages. No production measurements or external publications have happened yet.
+
+### Shareable MVP boundary
+
+The repository can now be shared and rerun from a clean Python 3.11 environment. CI
+checks packaging, lint, unit tests, scenario validation, offline Inspect smoke runs,
+and empty-state dashboard generation. The Pages workflow publishes that dashboard,
+which intentionally reports that no reviewed results exist. A future pilot must add a
+curated `results/gap_table.csv` (kept out of Git by default), rerun the dashboard, and
+publish only after transcript and score review is complete.
 
 ### Local provider note
 

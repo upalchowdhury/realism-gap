@@ -27,6 +27,10 @@
   model or claimed as complete.
 - The assistant added a pure log-export adapter and synthetic tests. Local Inspect
   connectivity logs were not used as result data; no benchmark score was produced.
+- The assistant added a dependency-light static dashboard, GitHub Pages workflow,
+  reproducibility guide, task-schema documentation, and CI/Makefile targets. The
+  dashboard was tested with both an empty state and a synthetic aggregate row; no
+  empirical result was inferred from that synthetic row.
 
 ## Intended division of work
 

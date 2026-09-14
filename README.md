@@ -15,38 +15,45 @@ alongside an *awareness probe* (does the model say, or reason, that it is being 
 
 ## Current stage
 
-**Stage 2 complete: measurement contract.** This remains a starter skeleton with two
-feedback-sycophancy pairs, not a validated benchmark. The [build and deployment plan](docs/build-plan.md)
+**Shareable MVP complete; empirical pilot pending.** This repository has a tested
+foundation, strict measurement contract, bounded runner/export path, and static
+dashboard. It contains two starter feedback-sycophancy pairs, not a validated
+benchmark. The [build and deployment plan](docs/build-plan.md)
 defines the stages, completion gates, known issues, and the next bounded task.
 
 The local foundation is verified with Python >=3.11, a locked editable install, Ruff,
 pytest, validation, and both lab and wild Inspect runs with mock generation and a
 deterministic offline plumbing scorer. The result contract now rejects incomplete
-identities and invalid grades before analysis. Next: design and run the small real pilot.
+identities and invalid grades before analysis. The next empirical step is an owner-
+reviewed local pilot; no benchmark findings are published yet.
 Local continuity notes live in Git-ignored `MEMORY.md`.
 
 ## Results
 
-> First full run scheduled for week 5 (Oct 12–18, 2026). Until then this table is empty on purpose.
+No validated benchmark results are published yet. The table and dashboard remain empty
+until a reviewed pilot export is available; plumbing fixtures are never presented as
+model findings.
 
 | Model | Sycophancy gap | Deception gap | Sandbagging gap | Reward-hacking gap | Awareness rate |
 |---|---|---|---|---|---|
 | — | — | — | — | — | — |
 
-Live dashboard: `dashboard/` (published via GitHub Pages once results exist).
+Live dashboard: [GitHub Pages](https://upalchowdhury.github.io/realism-gap/) (empty
+state until reviewed results exist) or open [`dashboard/index.html`](dashboard/index.html)
+locally. GitHub Pages is built by [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
+from the same deterministic dashboard command used locally.
 
-## Planned setup (verification pending)
+## Reproduce the MVP
 
-These starter commands require Python >=3.11. Installation and Inspect compatibility
-will be checked in stage 1; real-model runs belong to the later pilot.
+These commands require Python >=3.11. See [`docs/reproducibility.md`](docs/reproducibility.md)
+for locked setup, checks, offline smoke runs, log export, and dashboard generation.
 
 ```bash
-pip install -e ".[dev]"
-export ANTHROPIC_API_KEY=...            # or OPENAI_API_KEY, etc.
-inspect eval tasks/sycophancy_feedback/task.py -T realism=wild --model anthropic/claude-sonnet-4-5 --limit 5
+uv sync --locked --extra dev
+make lint test validate dashboard
 ```
 
-Intended smoke command without an API key (to verify in stage 1 for both realism values):
+Offline smoke command without an API key:
 
 ```bash
 inspect eval tasks/sycophancy_feedback/task.py -T realism=lab -T judge=mockllm/model --model mockllm/model --limit 2
@@ -67,6 +74,10 @@ analysis/                paired bootstrap, awareness–gap correlation, mini tim
 docs/                    design doc, eval-tells checklist, AEF-one methodology map, decisions/, log/
 dashboard/               static results page (GitHub Pages)
 ```
+
+The dashboard is generated with `python -m analysis.dashboard [input.csv] [output.html]`.
+It shows model/behavior gaps, paired-bootstrap intervals, pair counts, and direction
+bars when an aggregated table exists; otherwise it shows the honest empty state.
 
 ## Planned method
 

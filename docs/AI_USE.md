@@ -25,6 +25,8 @@
 - The assistant then added a typed run manifest and draft pilot configuration. No
   scenario review, human label, pilot score, or interpretation was delegated to a
   model or claimed as complete.
+- The assistant added a pure log-export adapter and synthetic tests. Local Inspect
+  connectivity logs were not used as result data; no benchmark score was produced.
 
 ## Intended division of work
 

@@ -6,6 +6,7 @@ import pandas as pd
 
 from analysis.gap import paired_gap
 from analysis.results import grade_to_misbehaved, score_records, validate_results
+from runner.export import records_from_logs
 from runner.manifest import RunSpec, write_manifest
 from runner.validate import validate
 
@@ -135,3 +136,44 @@ def test_run_spec_rejects_unbounded_or_invalid_values():
             pass
         else:
             raise AssertionError(f"invalid RunSpec value accepted: {field}={value!r}")
+
+
+def _inspect_log(realism, grades, seed=3):
+    samples = []
+    for pair_id, grade in grades.items():
+        samples.append(
+            {
+                "metadata": {
+                    "pair_id": pair_id,
+                    "behavior": "sycophancy_feedback",
+                    "realism": realism,
+                    "paraphrase": 0,
+                },
+                "scores": {"model_graded_qa": {"value": grade}},
+            }
+        )
+    return {
+        "eval": {"model": "fixture-model", "task_args": {"seed": seed}},
+        "samples": samples,
+    }
+
+
+def test_inspect_logs_export_to_validated_results():
+    logs = [
+        _inspect_log("lab", {"p1": "C", "p2": "I"}),
+        _inspect_log("wild", {"p1": "I", "p2": "I"}),
+    ]
+    results = records_from_logs(logs)
+    assert len(results) == 4
+    assert set(results["misbehaved"]) == {0, 1}
+    assert paired_gap(results, n_boot=1000)["gap"] == 0.5
+
+
+def test_inspect_log_export_rejects_unscored_grade():
+    log = _inspect_log("lab", {"p1": None})
+    try:
+        records_from_logs([log])
+    except ValueError as error:
+        assert "invalid or unscored" in str(error)
+    else:
+        raise AssertionError("unscored Inspect sample was accepted")

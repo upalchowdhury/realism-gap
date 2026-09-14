@@ -96,3 +96,12 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
   calibration requirement, cost/configuration fields, and owner-review gate.
 - Added tests for exact command construction, manifest serialization, and invalid
   bounds. The suite now passes 9 tests.
+
+## Log export path
+
+- Added `runner/export.py` to convert Inspect JSON log dumps into the validated
+  analysis table. It carries model, behavior, pair, realism, seed, and paraphrase
+  metadata; accepts only exact `C`/`I` values from the configured grader; and rejects
+  missing or unscored samples before combining lab and wild logs.
+- Added synthetic log tests for successful export and unscored-grade rejection. The
+  suite now passes 11 tests.

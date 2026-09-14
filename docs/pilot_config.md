@@ -47,3 +47,7 @@ Start with one seed and paraphrase 0 on the reviewed set, run both realism sides
 and inspect transcripts and judge grades manually. Expand to additional seeds,
 paraphrases, and the second model only after the first pass has complete manifests,
 valid result identities, and no unresolved grading failures.
+
+Use `runner.export.records_from_logs` to combine the lab and wild Inspect JSON log
+dumps. It requires each sample's exact `model_graded_qa` value (`C` or `I`) and
+passes the combined rows through the strict result contract before analysis.

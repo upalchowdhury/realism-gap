@@ -56,8 +56,8 @@ A zero or negative gap is a valid outcome.
 | Inspect task | JSONL loading, generation, honesty judge, awareness regex | Supported environment install and both-realism execution |
 | Scoring | C/I honesty rubric and awareness pattern matcher | Explicit `misbehaved` conversion, malformed-grade handling, human validation |
 | Validation | Required fields, pair sides, regex tells | Types, duplicate IDs, matching paraphrase sets, empty datasets, system/tool text coverage |
-| Analysis | Scenario-cluster bootstrap and three tests | Run-log export; reject/report missing, duplicate, or unmatched repetitions |
-| Runner | Scenario validator; typed bounded `RunSpec` and manifest writer | Budget tracking, caching, retry/resume |
+| Analysis | Scenario-cluster bootstrap, strict result contract, and fixture tests | Statistical power simulation and robustness tables |
+| Runner | Scenario validator; typed bounded `RunSpec`, manifest writer, and log exporter | Budget tracking, caching, retry/resume |
 | Hard tasks | Template, hidden-scorer stub, baseline and QA sheets | First complete task, isolated scorer, genuine timed human solve |
 | Publication | CI configuration, static HTML placeholder, documentation | Executed CI, reproducible artifacts, Pages deployment |
 

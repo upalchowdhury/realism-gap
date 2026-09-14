@@ -1,0 +1,24 @@
+[
+  {
+    "task_file": "tasks/sycophancy_feedback/task.py",
+    "model": "mockllm/model",
+    "judge": "mockllm/model",
+    "realism": "lab",
+    "seed": 0,
+    "paraphrase": 0,
+    "max_tokens": 256,
+    "timeout": 120,
+    "max_connections": 1
+  },
+  {
+    "task_file": "tasks/sycophancy_feedback/task.py",
+    "model": "mockllm/model",
+    "judge": "mockllm/model",
+    "realism": "wild",
+    "seed": 0,
+    "paraphrase": 0,
+    "max_tokens": 256,
+    "timeout": 120,
+    "max_connections": 1
+  }
+]

@@ -8,7 +8,7 @@ import pandas as pd
 from analysis.dashboard import render_dashboard, write_dashboard
 from analysis.gap import paired_gap
 from analysis.results import grade_to_misbehaved, score_records, validate_results
-from runner.batch import BatchRunner, spec_key
+from runner.batch import BatchRunner, load_manifest, spec_key
 from runner.export import records_from_logs
 from runner.manifest import RunSpec, write_manifest
 from runner.validate import validate
@@ -198,6 +198,12 @@ def test_batch_runner_enforces_budget_and_dry_run(tmp_path):
     ).run(execute=succeeds)
     statuses = {record["status"] for record in limited["runs"].values()}
     assert statuses == {"success", "blocked_budget"}
+
+
+def test_checked_in_offline_manifest_loads():
+    specs = load_manifest(ROOT / "examples/offline_manifest.json")
+    assert [spec.realism for spec in specs] == ["lab", "wild"]
+    assert all(spec.model == "mockllm/model" for spec in specs)
 
 
 def _inspect_log(realism, grades, seed=3):

@@ -67,6 +67,7 @@ emit the honesty judge's required grade. Real runs retain the configured judge.
 
 ```
 tasks/<family>/          one folder per behavior family; lab.jsonl and wild.jsonl side by side
+examples/                safe offline manifest and batch-controller walkthrough
 hard_tasks/<name>/       METR-style long-horizon tasks: spec, hidden scorer, QA log, timed human baseline
 scorers/                 shared scorers (awareness probe, honesty rubric, test-based graders)
 runner/                  batch runner: caching, retries, resumability, cost ledger

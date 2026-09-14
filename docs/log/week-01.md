@@ -89,6 +89,8 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
   planning, and an explicit per-attempt budget cap.
 - Added tests for retry/resume, dry-run planning, and budget blocking. The controller
   stores execution metadata only; log export and result validation remain mandatory.
+- Added `examples/offline_manifest.json` and its walkthrough so a fresh checkout can
+  preview or execute the bounded mock lab/wild commands without credentials.
 
 ## Local model inventory and provider smoke (stage 3 preparation)
 

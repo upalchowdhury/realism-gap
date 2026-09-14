@@ -82,3 +82,7 @@ the declared limit. A budget cap marks later entries `blocked_budget` rather tha
 starting work that would exceed it. Use `--dry-run` to materialize a plan without
 executing Inspect. The controller records execution state only; failed or incomplete
 runs cannot enter analysis until log export validates them.
+
+For a no-key example, use [`examples/offline_manifest.json`](../examples/offline_manifest.json)
+with the walkthrough in [`examples/README.md`](../examples/README.md). Its mock output
+is plumbing and must not be reported as model behavior.

@@ -34,6 +34,8 @@
 - The assistant added the resumable manifest batch controller and tests for retries,
   resume behavior, dry-run planning, and budget enforcement. It has not executed a
   real model batch or generated benchmark scores.
+- The assistant added a checked-in offline manifest example and documentation for
+  running it. Its mock outputs are explicitly plumbing and are not evidence.
 
 ## Intended division of work
 

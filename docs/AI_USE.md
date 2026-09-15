@@ -36,6 +36,9 @@
   real model batch or generated benchmark scores.
 - The assistant added a checked-in offline manifest example and documentation for
   running it. Its mock outputs are explicitly plumbing and are not evidence.
+- The assistant added and tested the deterministic publisher CLI. It performs no
+  labeling; it only aggregates already validated result rows and renders their
+  uncertainty on the dashboard.
 
 ## Intended division of work
 

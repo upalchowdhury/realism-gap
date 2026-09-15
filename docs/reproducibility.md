@@ -65,6 +65,16 @@ configured grader and validates all pair, seed, and paraphrase identities. Then 
 `analysis.gap.gap_table` and generate the dashboard from the resulting aggregate CSV.
 Do not bypass these checks by editing a CSV manually.
 
+The complete publication step is:
+
+```bash
+python -m analysis.publish results/validated.csv results/gap_table.csv \
+  dashboard/index.html --bootstrap 10000 --seed 0
+```
+
+The command refuses incomplete identities or invalid grades through the analysis
+contract and writes the aggregate table and dashboard only after validation succeeds.
+
 ## Bounded batch execution
 
 Create a JSON manifest with `runner.manifest.write_manifest`, then run it through the

@@ -80,7 +80,9 @@ The dashboard is generated with `python -m analysis.dashboard [input.csv] [outpu
 It shows model/behavior gaps, paired-bootstrap intervals, pair counts, and direction
 bars when an aggregated table exists; otherwise it shows the honest empty state.
 Manifest execution is bounded and resumable with `python -m runner.batch`; see the
-reproducibility guide for retry, timeout, dry-run, and budget-cap options.
+reproducibility guide for retry, timeout, dry-run, and budget-cap options. Once logs
+have been reviewed and exported, `python -m analysis.publish` rebuilds the aggregate
+CSV and dashboard in one deterministic command.
 
 ## Planned method
 

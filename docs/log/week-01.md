@@ -91,6 +91,8 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
   stores execution metadata only; log export and result validation remain mandatory.
 - Added `examples/offline_manifest.json` and its walkthrough so a fresh checkout can
   preview or execute the bounded mock lab/wild commands without credentials.
+- Added `analysis.publish`, which validates long-format exports, writes the aggregate
+  gap table, and rebuilds the dashboard as one deterministic publication step.
 
 ## Local model inventory and provider smoke (stage 3 preparation)
 

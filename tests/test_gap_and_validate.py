@@ -7,6 +7,7 @@ import pandas as pd
 
 from analysis.dashboard import render_dashboard, write_dashboard
 from analysis.gap import paired_gap
+from analysis.publish import publish
 from analysis.results import grade_to_misbehaved, score_records, validate_results
 from runner.batch import BatchRunner, load_manifest, spec_key
 from runner.export import records_from_logs
@@ -204,6 +205,18 @@ def test_checked_in_offline_manifest_loads():
     specs = load_manifest(ROOT / "examples/offline_manifest.json")
     assert [spec.realism for spec in specs] == ["lab", "wild"]
     assert all(spec.model == "mockllm/model" for spec in specs)
+
+
+def test_publisher_writes_aggregate_and_dashboard(tmp_path):
+    fixture = pd.read_csv(ROOT / "tests/fixtures/scores.csv")
+    validated_path = tmp_path / "validated.csv"
+    score_records(fixture.to_dict("records")).to_csv(validated_path, index=False)
+    table_path = tmp_path / "results" / "gap_table.csv"
+    dashboard_path = tmp_path / "dashboard" / "index.html"
+    table = publish(validated_path, table_path, dashboard_path, n_boot=200, seed=3)
+    assert table.loc[0, "gap"] == 0.5
+    assert table_path.exists()
+    assert "+0.500" in dashboard_path.read_text()
 
 
 def _inspect_log(realism, grades, seed=3):

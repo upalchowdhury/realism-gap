@@ -130,10 +130,33 @@ def test_run_spec_is_explicit_and_bounded(tmp_path):
     assert json.loads(manifest.read_text()) == [spec.manifest_record()]
 
 
+def test_run_spec_can_encode_ollama_compatible_reasoning_policy():
+    spec = RunSpec(
+        task_file="tasks/sycophancy_feedback/task.py",
+        model="openai/qwen3.8:27b",
+        judge="mockllm/model",
+        realism="wild",
+        seed=0,
+        paraphrase=0,
+        model_base_url="http://127.0.0.1:11434/v1",
+        reasoning_effort="none",
+    )
+    assert spec.command()[-6:] == [
+        "--timeout", "120", "--model-base-url", "http://127.0.0.1:11434/v1",
+        "--reasoning-effort", "none",
+    ]
+
+
 def test_run_spec_rejects_unbounded_or_invalid_values():
     common = {"task_file": "task.py", "model": "m", "judge": "j", "realism": "lab",
               "seed": 0, "paraphrase": 0}
-    for field, value in (("realism", "other"), ("max_tokens", 0), ("timeout", 0), ("seed", -1)):
+    for field, value in (
+        ("realism", "other"),
+        ("max_tokens", 0),
+        ("timeout", 0),
+        ("seed", -1),
+        ("reasoning_effort", "unsupported"),
+    ):
         try:
             RunSpec(**{**common, field: value})
         except ValueError:

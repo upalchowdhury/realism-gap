@@ -39,6 +39,10 @@
 - The assistant added and tested the deterministic publisher CLI. It performs no
   labeling; it only aggregates already validated result rows and renders their
   uncertainty on the dashboard.
+- The assistant ran discarded local Ollama calibration samples to resolve the
+  Inspect endpoint and reasoning policy. One bounded wild sample using the
+  OpenAI-compatible endpoint with `reasoning_effort=none` produced visible output;
+  no calibration transcript or score is treated as benchmark data.
 
 ## Intended division of work
 

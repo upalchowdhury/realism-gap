@@ -17,6 +17,8 @@ class RunSpec:
     max_tokens: int = 1024
     timeout: int = 120
     max_connections: int = 1
+    model_base_url: str | None = None
+    reasoning_effort: str | None = None
 
     def __post_init__(self) -> None:
         if self.realism not in {"lab", "wild"}:
@@ -27,11 +29,17 @@ class RunSpec:
             raise ValueError("resource bounds must be positive")
         if not self.model or not self.judge or not self.task_file:
             raise ValueError("task_file, model, and judge must be non-empty")
+        if self.model_base_url is not None and not self.model_base_url.strip():
+            raise ValueError("model_base_url must be non-empty when supplied")
+        if self.reasoning_effort is not None and self.reasoning_effort not in {
+            "none", "minimal", "low", "medium", "high", "xhigh", "max"
+        }:
+            raise ValueError("reasoning_effort is not a supported Inspect value")
 
     def command(self, inspect_executable: str = "inspect") -> list[str]:
         """Return the exact bounded Inspect command for this run."""
 
-        return [
+        command = [
             inspect_executable,
             "eval",
             self.task_file,
@@ -48,6 +56,11 @@ class RunSpec:
             "--timeout",
             str(self.timeout),
         ]
+        if self.model_base_url:
+            command.extend(["--model-base-url", self.model_base_url])
+        if self.reasoning_effort:
+            command.extend(["--reasoning-effort", self.reasoning_effort])
+        return command
 
     def manifest_record(self) -> dict[str, object]:
         """Return a JSON-serializable record suitable for a run manifest."""

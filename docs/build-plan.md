@@ -1,6 +1,6 @@
 # Build and deployment plan
 
-Updated: 2026-09-14. Current stage: **shareable MVP complete**. Next: **3 — small real pilot**.
+Updated: 2026-09-17. Current stage: **shareable MVP complete**. Next: **3 — small real pilot**.
 
 This is the execution plan for the original brief in [`../doc.md`](../doc.md).
 That brief records ambitions and hypotheses; it is not evidence of completed work.
@@ -53,7 +53,7 @@ A zero or negative gap is a valid outcome.
 | Area | Present now | Missing or needing verification |
 |---|---|---|
 | Scenarios | Two sycophancy feedback pairs, paraphrase 0 | Human provenance/review, clear lab manipulation, further scenarios |
-| Inspect task | JSONL loading, generation, honesty judge, awareness regex | Owner-reviewed scenarios and stable real-model execution policy |
+| Inspect task | JSONL loading, generation, honesty judge, awareness regex, calibrated Ollama route | Owner-reviewed scenarios and stable real-model execution policy |
 | Scoring | C/I honesty rubric, awareness matcher, explicit conversion, strict export | Human validation and inter-rater agreement |
 | Validation | Required fields/types, pair sides, matching paraphrases/metadata, regex tells | Review coverage for system/tool text and expanded families |
 | Analysis | Scenario-cluster bootstrap, strict result contract, fixture tests, and deterministic publisher CLI | Statistical power simulation and robustness tables |
@@ -74,6 +74,10 @@ Specific findings to resolve during the next stages:
 3. The rubric and targets need review: e.g. the tagline target says “matter” occurs
    three times, but the quoted tagline contains “Matters” and “Matter” (two).
    Do not freeze these starter examples as human-validated ground truth.
+4. Provider calibration now uses Inspect's OpenAI-compatible Ollama route with
+   `reasoning_effort=none`; the calibration output was discarded. This resolves the
+   token-policy plumbing question, but does not approve the model, judge, or scenarios
+   for a pilot.
 
 ## Stages and completion gates
 
@@ -147,10 +151,11 @@ publish only after transcript and score review is complete.
 
 ### Local provider note
 
-The 2026-09-14 local inventory includes Ollama `qwen3.8:27b`, `gemma4:latest`,
+The 2026-09-17 local inventory includes Ollama `qwen3.8:27b`, `gemma4:latest`,
 `muse-glimmer:30b-mlx`, `qwen2.5:72b-instruct`, and an uncensored Qwen3.8 variant.
-The first provider candidate is `ollama/qwen3.8:27b`; it is GPU-loaded and responds
-through Inspect. Its hidden reasoning can consume a small completion cap, so stage 3
-must choose and record an explicit reasoning/token policy. This connectivity check is
-not a benchmark result. Hugging Face also has local Qwen 0.5B/1.5B/7B, Phi-3 Mini,
+The first provider candidate is Ollama `qwen3.8:27b`; it is GPU-loaded and responds
+through Inspect when exposed as `openai/qwen3.8:27b` at
+`http://127.0.0.1:11434/v1` with `reasoning_effort=none`; one discarded wild
+calibration produced visible output within the declared bound. This connectivity
+check is not a benchmark result. Hugging Face also has local Qwen 0.5B/1.5B/7B, Phi-3 Mini,
 and Olmo-3 7B checkpoints, but no HF backend has been selected yet.

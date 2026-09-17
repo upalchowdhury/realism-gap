@@ -94,6 +94,18 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
 - Added `analysis.publish`, which validates long-format exports, writes the aggregate
   gap table, and rebuilds the dashboard as one deterministic publication step.
 
+## Provider calibration (2026-09-17)
+
+- Direct Ollama `qwen3.8:27b --think=false` returned `READY`. Inspect's native Ollama
+  adapter rejected provider-specific `-M` arguments, so those attempts were discarded.
+- The supported route is the OpenAI-compatible endpoint with
+  `reasoning_effort=none`; a one-sample wild calibration completed with visible text
+  under `max_tokens=768`, `timeout=120`, and one connection. The log and output are
+  calibration-only and are not in `results/`.
+- Extended `RunSpec` to encode `model_base_url` and `reasoning_effort`, with tests for
+  exact command construction and invalid values. Human scenario/judge review remains
+  the gate before a real score.
+
 ## Local model inventory and provider smoke (stage 3 preparation)
 
 - Ollama reports: `qwen3.8:27b` (17 GB), `orcarouter/Qwen3.8-27B-Uncensored:latest`
@@ -105,10 +117,10 @@ been produced. The next bounded milestone is stage 3, a small owner-reviewed pil
   Inspect smoke reached `ollama/qwen3.8:27b` for both lab and wild with successful
   one-sample runs. Small caps ended during hidden reasoning, leaving empty visible
   completion; these runs are provider evidence only and were discarded.
-- `gemma4:latest` showed the same reasoning-cap behavior through Inspect. Direct
-  Ollama `--think=false` works, but the tested Inspect OpenAI-compatible path did not
-  disable thinking via `extra_body`. Stage 3 must resolve and record this setting or
-  use a sufficiently bounded policy before collecting pilot results.
+- `gemma4:latest` showed the same reasoning-cap behavior through the earlier Inspect
+  route. That attempt did not disable thinking via `extra_body`; the later
+  OpenAI-compatible `reasoning_effort=none` calibration supersedes it for the first
+  candidate. No gemma output is approved for pilot use.
 - The first pilot candidate is `ollama/qwen3.8:27b`; `gemma4:latest` is a possible
   second model or local judge after calibration. No benchmark scores were recorded.
 

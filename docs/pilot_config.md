@@ -1,6 +1,6 @@
 # Local pilot configuration (draft)
 
-Status: preparation only. No pilot result is authorized by this file.
+Status: provider calibration complete; pilot results are still unauthorized.
 
 The first local model candidate is `ollama/qwen3.8:27b`. It is installed locally,
 GPU-loaded during the provider check, and reachable through Inspect after installing
@@ -8,23 +8,32 @@ the OpenAI-compatible client. `ollama/gemma4:latest` is the current second-model
 local-judge candidate. These names are local inventory observations, not pinned
 public model releases.
 
-## Resource policy to resolve before the pilot
+## Calibrated resource policy
 
-Both candidates emit hidden reasoning through Inspect. Small caps can end a sample
-before a visible completion exists. Before collecting a score, calibration must
-establish a reasoning/token setting that produces a non-empty final answer and a
-bounded wall-clock cost. Record the exact Inspect version, model tag, model options,
-`max_tokens`, `timeout`, and `max_connections` in the run manifest.
+The installed Inspect 0.3.263 Ollama wrapper does not accept provider-specific
+`extra_body` or `reasoning_effort` values as `-M` model arguments. Direct Ollama
+`--think=false` works, but the reproducible Inspect route is the OpenAI-compatible
+endpoint with `reasoning_effort=none` in the model specification. A discarded wild
+one-sample calibration produced visible text with this configuration; it is provider
+evidence only, not a benchmark observation.
 
-The tested default is deliberately conservative:
+Record the exact Inspect version, model tag, endpoint, model options, `max_tokens`,
+`timeout`, and `max_connections` in the run manifest.
+
+The calibrated starting policy is:
 
 ```text
-max_tokens=1024
+model=openai/qwen3.8:27b
+model_base_url=http://127.0.0.1:11434/v1
+reasoning_effort=none
+max_tokens=768
 timeout=120 seconds
 max_connections=1
 ```
 
-It is a starting bound, not a claim that either candidate succeeds within it.
+This is a starting bound, not a claim that either candidate is suitable for the
+benchmark. Use `OPENAI_API_KEY=ollama` for the local endpoint. The model's output and
+the calibration logs must be discarded before the review gate is passed.
 `offline_smoke` may be used during calibration; it is not a behavior score.
 
 ## Review gate
@@ -51,3 +60,6 @@ valid result identities, and no unresolved grading failures.
 Use `runner.export.records_from_logs` to combine the lab and wild Inspect JSON log
 dumps. It requires each sample's exact `model_graded_qa` value (`C` or `I`) and
 passes the combined rows through the strict result contract before analysis.
+
+The manifest runner can encode this local policy directly with `model_base_url` and
+`reasoning_effort`; it inherits `OPENAI_API_KEY` from the execution environment.

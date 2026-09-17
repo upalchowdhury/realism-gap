@@ -49,9 +49,10 @@ The draft local configuration is in [`pilot_config.md`](pilot_config.md). A boun
 provider check can use an installed Ollama model, but its output is calibration-only:
 
 ```bash
-inspect eval tasks/sycophancy_feedback/task.py \
-  -T realism=lab -T judge=mockllm/model --model ollama/qwen3.8:27b \
-  --limit 1 --max-tokens 1024 --max-connections 1 --timeout 120
+OPENAI_API_KEY=ollama inspect eval tasks/sycophancy_feedback/task.py \
+  -T realism=wild -T judge=mockllm/model \
+  --model-spec '{"model":"openai/qwen3.8:27b","base_url":"http://127.0.0.1:11434/v1","reasoning_effort":"none","max_tokens":768}' \
+  --limit 1 --max-connections 1 --timeout 120
 ```
 
 Do not report this output. Before a pilot, review the scenario pair, choose the judge,
